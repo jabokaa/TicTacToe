@@ -103,5 +103,11 @@
                 $teste =  "/"+document.getElementById("codigoDeLaSala").value;
                 window.location.href = "{{URL::to('game/')}}"+ $teste;
             });
+
+            var time = 4000; // 1s
+
+            setTimeout(function(){ 
+                window.location.href = "{{URL::to('game/'.$gameRoom->id)}}";
+            }, time);
         </script>
 </body>
