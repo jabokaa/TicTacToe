@@ -11,6 +11,26 @@ use Log;
 class GameRoomController extends Controller
 {
 
+    private static $PATH_X = "x.png";
+    private static $PATH_O = "o.png";
+
+    public function restartGame(Request $request)
+    {
+        $idGameRoom = $request->idGameRoom;
+        $gameRoom = GameRoom::find($idGameRoom);
+        $gameRoom->Square1 = '';
+        $gameRoom->Square2 = '';
+        $gameRoom->Square3 = '';
+        $gameRoom->Square4 = '';
+        $gameRoom->Square5 = '';
+        $gameRoom->Square6 = '';
+        $gameRoom->Square7 = '';
+        $gameRoom->Square8 = '';
+        $gameRoom->Square9 = '';
+        $gameRoom->gameState = "";
+        $gameRoom->save();
+        return view("game", compact('gameRoom'));
+    }
     public function createGame()
     {
         if(Cookie::get("idGamer"))
@@ -30,7 +50,7 @@ class GameRoomController extends Controller
             ->where("id", $idGame)
             ->first();
 
-        Cookie::queue("idGamer", $idGamer, 60);
+        Cookie::queue("idGamer", $idGamer);
         return view("game", compact('gameRoom'));
     }
 
@@ -51,7 +71,7 @@ class GameRoomController extends Controller
             else
             {
                 $gameRoom->gamer2Id = DB::table('Gamers')->insertGetId([]);
-                Cookie::queue("idGamer", $gameRoom->gamer2Id, 60);
+                Cookie::queue("idGamer", $gameRoom->gamer2Id);
                 $gameRoom->save();
             } 
         }
@@ -158,11 +178,11 @@ class GameRoomController extends Controller
     private function performMove($gameRoom, $square)
     {
         $gamerTurn = $gameRoom->gamer2Id;
-        $playerSymbol = 'X';
+        $playerSymbol = self::$PATH_X;
         if($gameRoom->gamerTurn == $gameRoom->gamer2Id)
         {
             $gamerTurn = $gameRoom->gamer1Id;
-            $playerSymbol = 'O';
+            $playerSymbol = self::$PATH_O;
         }
 
         $gameRoom->gamerTurn = $gamerTurn;
