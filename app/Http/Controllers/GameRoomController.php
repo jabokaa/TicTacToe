@@ -5,57 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\GameRoom;
 use Illuminate\Support\Facades\DB;
+use Cookie;
+use Log;
 
 class GameRoomController extends Controller
 {
-    private $gamer1Id;
-    private $gamer2Id;
-    private static $ARRAYS_VICTORY = array(
-        array(
-            true,true,true,
-            false,false,false,
-            false,false,false
-        ),
-        array(
-            false,false,false,
-            true,true,true,
-            false,false,false
-        ),
-        array(
-            false,false,false,
-            false,false,false,
-            true,true,true
-        ),
-        array(
-            true,false,false,
-            true,false,false,
-            true,false,false
-        ),
-        array(
-            false,true,false,
-            false,true,false,
-            false,true,false
-        ),
-        array(
-            false,false,true,
-            false,false,true,
-            false,false,true
-        ),
-        array(
-            true,false,false,
-            false,true,false,
-            false,false,true
-        ),
-        array(
-            false,false,true,
-            false,true,false,
-            true,false,false
-        )
-    );
 
     public function createGame()
     {
-        $idGamer = DB::table('Gamers')->insertGetId([]);
+        if(Cookie::get("idGamer"))
+        {
+            $idGamer = Cookie::get("idGamer");
+        }
+        else
+        {
+            $idGamer = DB::table('Gamers')->insertGetId([]);
+        }
 
         $idGame = DB::table('game_rooms')->insertGetId(
             ['gamer1Id' => $idGamer, "gamerTurn" => $idGamer]
@@ -65,6 +30,7 @@ class GameRoomController extends Controller
             ->where("id", $idGame)
             ->first();
 
+        Cookie::queue("idGamer", $idGamer, 60);
         return view("game", compact('gameRoom'));
     }
 
@@ -72,9 +38,23 @@ class GameRoomController extends Controller
     {
         $gameRoom = GameRoom::find($idGameRoom);
 
-        $idGamer = DB::table('Gamers')->insertGetId([]);
-        $gameRoom->gamer2Id = $idGamer;
-        $gameRoom->save();
+        if($gameRoom->gamer2Id == 0)
+        {
+            if(Cookie::get("idGamer"))
+            {
+                if($gameRoom->gamer1Id != Cookie::get("idGamer"))
+                {
+                    $gameRoom->gamer2Id = Cookie::get("idGamer");
+                    $gameRoom->save();
+                }
+            }
+            else
+            {
+                $gameRoom->gamer2Id = DB::table('Gamers')->insertGetId([]);
+                Cookie::queue("idGamer", $gameRoom->gamer2Id, 60);
+                $gameRoom->save();
+            } 
+        }
         return view("game", compact('gameRoom'));
     }
 
@@ -84,45 +64,51 @@ class GameRoomController extends Controller
 
     private function validatePlay($gameRoom, $idGamer, $square)
     {
-        if(is_null($gameRoom->gamer2Id))
+        
+        if($gameRoom->gamer2Id == 0)
         {
             return false;
         }
-
+        if($gameRoom->gameState != '')
+        {
+            return false;
+        }
         if($gameRoom->gamerTurn != $idGamer)
         {
             return false;
         }
-        else if(!is_null($gameRoom->$square))
+        else if($gameRoom->$square != '')
         {
             return false;
         }
         return true;
     }
 
-    private function judagar($idGamer, $square, $idGameRoom)
+    public function jugar(Request $request)
     {
-        $gameRoom = DB::table('GameRoom')
-            ->where("id", $idGameRoom)
-            ->first();
+        $idGamer = Cookie::get("idGamer");
+        $square = $request->square;
+        $idGameRoom = $request->idGameRoom;
+        $gameRoom = GameRoom::find($idGameRoom);
 
         $validateOk = $this->validatePlay($gameRoom, $idGamer, $square);
         if(!$validateOk)
         {
             return "jugada invalida";
         }
-
-        $playerSymbol = $this->performMove($gameRoom);
-
+        $playerSymbol = $this->performMove($gameRoom, $square);
 
         if($this->isVictory($gameRoom, $playerSymbol))
         {
-            return "jugador $idGamer gano";
+            $gameRoom->gameState = "Jugador $idGamer Gano";
+            $gameRoom->save();
+            return;
         }
-
         if($this->isEmpate($gameRoom))
         {
-            return "Empate";
+            $gameRoom->gameState = "Empate";
+            $gameRoom->save();
+            return;
         }
 
         return true;
@@ -130,23 +116,27 @@ class GameRoomController extends Controller
 
     private function isVictory($gameRoom, $playerSymbol)
     {
-        $boardArray = array();
-        $boardArray[0] = $gameRoom->Square1 == $playerSymbol ? true : false ;
-        $boardArray[1] = $gameRoom->Square2 == $playerSymbol ? true : false ;
-        $boardArray[2] = $gameRoom->Square3 == $playerSymbol ? true : false ;
-        $boardArray[3] = $gameRoom->Square4 == $playerSymbol ? true : false ;
-        $boardArray[4] = $gameRoom->Square5 == $playerSymbol ? true : false ;
-        $boardArray[5] = $gameRoom->Square6 == $playerSymbol ? true : false ;
-        $boardArray[6] = $gameRoom->Square7 == $playerSymbol ? true : false ;
-        $boardArray[7] = $gameRoom->Square8 == $playerSymbol ? true : false ;
-        $boardArray[8] = $gameRoom->Square9 == $playerSymbol ? true : false ;
+        $winningCondition1 = ($gameRoom->Square1 == $playerSymbol) && ($gameRoom->Square2 ==
+            $playerSymbol) && ($gameRoom->Square3 == $playerSymbol);
+        $winningCondition2 = ($gameRoom->Square4 == $playerSymbol) && ($gameRoom->Square5 ==
+           $playerSymbol) && ($gameRoom->Square6 == $playerSymbol);
+        $winningCondition3 = ($gameRoom->Square7 == $playerSymbol) && ($gameRoom->Square8 ==
+           $playerSymbol) && ($gameRoom->Square9 == $playerSymbol);
+        $winningCondition4 = ($gameRoom->Square1 == $playerSymbol) && ($gameRoom->Square4 == 
+           $playerSymbol) && ($gameRoom->Square7 == $playerSymbol);
+        $winningCondition5 = ($gameRoom->Square2 == $playerSymbol) && ($gameRoom->Square5 ==
+           $playerSymbol) && ($gameRoom->Square8 == $playerSymbol);
+        $winningCondition6 = ($gameRoom->Square3 == $playerSymbol) && ($gameRoom->Square6 ==
+           $playerSymbol) && ($gameRoom->Square9 == $playerSymbol);
+        $winningCondition7 = ($gameRoom->Square1 == $playerSymbol) && ($gameRoom->Square5 == 
+           $playerSymbol) && ($gameRoom->Square9 == $playerSymbol);
+        $winningCondition8 = ($gameRoom->Square3 == $playerSymbol) && ($gameRoom->Square5 == 
+           $playerSymbol) && ($gameRoom->Square7 == $playerSymbol);
 
-        foreach(self::$ARRAYS_VICTORY as $arrayVictory)
+        if($winningCondition1 || $winningCondition2 || $winningCondition3 || $winningCondition4
+            || $winningCondition5 || $winningCondition6 || $winningCondition7 || $winningCondition8)
         {
-            if($boardArray === $arrayVictory)
-            {
-                return true;
-            }
+            return true;
         }
         return false;
     }
@@ -155,24 +145,29 @@ class GameRoomController extends Controller
     {
         foreach(self::$FIELD_SQUEARE as $squeare)
         {
-            if(is_null($gameRoom->$squeare))
+            if($gameRoom->$squeare == '')
             {
                 return false;
             }
         }
+        $gameRoom->gameState = "El juego empato";
+        $gameRoom->save();
         return true;
     }
 
-    private function performMove($gameRoom)
+    private function performMove($gameRoom, $square)
     {
-        $gameRoom->gamerTurn = $gameRoom->gamer2Id;
-        $playerSymbol = 1;
+        $gamerTurn = $gameRoom->gamer2Id;
+        $playerSymbol = 'X';
         if($gameRoom->gamerTurn == $gameRoom->gamer2Id)
         {
-            $gameRoom->gamerTurn = $gameRoom->gamer1Id;
-            $playerSymbol = 2;
+            $gamerTurn = $gameRoom->gamer1Id;
+            $playerSymbol = 'O';
         }
+
+        $gameRoom->gamerTurn = $gamerTurn;
         $gameRoom->$square = $playerSymbol;
         $gameRoom->save();
+        return $playerSymbol;
     }
 }

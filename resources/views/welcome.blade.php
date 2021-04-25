@@ -25,19 +25,26 @@
                 <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
                     <div class="grid grid-cols-1 md:grid-cols-2">
                         <div class="p-6">
-                        <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laravel-news.com/" class="underline text-gray-900 dark:text-white">Entrar en Juego</a></div>
-
-                            <form action="/action_page.php">
+                        <div class="ml-4 text-lg leading-7 font-semibold"><a id="entrar" class="underline text-gray-900 dark:text-white">Entrar en Juego</a></div>
                             <label for="fname">Codigo</label>
-                            <input type="text" id="codigoDeLaSala" name="codigoDeLaSala" class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"><br>
-                            </form> 
+                            <input type="number" id="codigoDeLaSala" name="codigoDeLaSala" class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"><br>
                         </div>
                         <div class="p-6 border-t border-gray-200 dark:border-gray-700">
-                        <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laravel-news.com/" class="underline text-gray-900 dark:text-white">Nuevo Juego</a></div> 
+                        <div class="ml-4 text-lg leading-7 font-semibold"><a href="{{URL::to('game')}}" class="underline text-gray-900 dark:text-white">Nuevo Juego</a></div> 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
+    <script>
+        $( "#entrar" )
+        .click(function() {
+            $teste =  "/"+document.getElementById("codigoDeLaSala").value;
+            window.location.href = "{{URL::to('game/')}}"+ $teste;
+            });
+    </script>
 </html>
+|

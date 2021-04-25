@@ -23,3 +23,5 @@ Route::group(['prefix' => 'game'], function()
     Route::get('/', [GameRoomController::class, 'createGame']);
     Route::get('/{gameId}', [GameRoomController::class, 'comeIntoPlay']);
 });
+
+Route::PUT('/jugar', [GameRoomController::class, 'jugar']);
