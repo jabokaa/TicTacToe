@@ -24,7 +24,7 @@
 </style>
 <body>
 <div>
-<<<<<<< HEAD
+
 <div><a href="{{URL::to('game')}}">Nuevo Juego</a><br>
     <div class="ml-4 text-lg leading-7 font-semibold"><a id="entrar" class="underline text-gray-900 dark:text-white">Entrar en Juego</a>
         <input type="number" id="codigoDeLaSala" name="codigoDeLaSala" class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"><br>
@@ -33,9 +33,8 @@
     Tu eres el jugador: {{ Cookie::get('idGamer') }}<br>
     La sala es: {{ $gameRoom->id }}<br>
 </div>
-=======
+
 <p><a href="{{URL::to('game')}}">Nuevo Juego</a></p>
->>>>>>> b512f3681ddd173e2db94001268382ed138067fd
 <h1>{{$gameRoom->gameState}}</h1>
 </div>
         <div class="jogo" id='game'>
@@ -56,10 +55,7 @@
             </div>
         </div>
         <div id="resultado"></div>
-<<<<<<< HEAD
-=======
         <p>Jogador 1: {{$gameRoom->gamer1Id}}, Jogador 2: {{$gameRoom->gamer2Id}}, sala: {{$gameRoom->id}}
->>>>>>> b512f3681ddd173e2db94001268382ed138067fd
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
         <script>
@@ -83,13 +79,10 @@
             .mouseleave(function() {
                 window.location.href = "{{URL::to('game/'.$gameRoom->id)}}"
              });
-<<<<<<< HEAD
 
              $( "#entrar" ).click(function() {
                 $teste =  "/"+document.getElementById("codigoDeLaSala").value;
                 window.location.href = "{{URL::to('game/')}}"+ $teste;
             });
-=======
->>>>>>> b512f3681ddd173e2db94001268382ed138067fd
         </script>
 </body>
