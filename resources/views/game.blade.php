@@ -8,7 +8,7 @@
         width:603px;
         height:600px;
         border:solid 3px;
-        background-image: url("/juego.jpg");
+        background-image: url({{asset("juego.jpg")}});
         border-color: rgba(0,0,0,0);
     }
     
@@ -45,19 +45,19 @@
 </div>
         <div class="jogo" id='game'>
             <div class="linha">
-                <div class="casa" id="Square1">@if($gameRoom->Square1 != '')<img src='/{{$gameRoom->Square1}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square2">@if($gameRoom->Square2 != '')<img src='/{{$gameRoom->Square2}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square3">@if($gameRoom->Square3 != '')<img src='/{{$gameRoom->Square3}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square1">@if($gameRoom->Square1 != '')<img src='{{asset($gameRoom->Square1)}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square2">@if($gameRoom->Square2 != '')<img src='{{asset($gameRoom->Square2)}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square3">@if($gameRoom->Square3 != '')<img src='{{asset($gameRoom->Square3)}}'style="width: 100%;">@endif</div>
             </div>
             <div class="linha">
-                <div class="casa" id="Square4">@if($gameRoom->Square4 != '')<img src='/{{$gameRoom->Square4}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square5">@if($gameRoom->Square5 != '')<img src='/{{$gameRoom->Square5}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square6">@if($gameRoom->Square6 != '')<img src='/{{$gameRoom->Square6}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square4">@if($gameRoom->Square4 != '')<img src='{{asset($gameRoom->Square4)}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square5">@if($gameRoom->Square5 != '')<img src='{{asset($gameRoom->Square5)}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square6">@if($gameRoom->Square6 != '')<img src='{{asset($gameRoom->Square6)}}'style="width: 100%;">@endif</div>
             </div>
             <div class="linha" style="border-bottom-color: #ffffff;">
-                <div class="casa" id="Square7">@if($gameRoom->Square7 != '')<img src='/{{$gameRoom->Square7}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square8">@if($gameRoom->Square8 != '')<img src='/{{$gameRoom->Square8}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square9">@if($gameRoom->Square9 != '')<img src='/{{$gameRoom->Square9}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square7">@if($gameRoom->Square7 != '')<img src='{{asset($gameRoom->Square7)}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square8">@if($gameRoom->Square8 != '')<img src='{{asset($gameRoom->Square8)}}'style="width: 100%;">@endif</div>
+                <div class="casa" id="Square9">@if($gameRoom->Square9 != '')<img src='{{asset($gameRoom->Square9)}}'style="width: 100%;">@endif</div>
             </div>
         </div>
         <div id="resultado"></div>

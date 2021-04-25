@@ -7,6 +7,7 @@ use App\Models\GameRoom;
 use Illuminate\Support\Facades\DB;
 use Cookie;
 use Log;
+use HTML;
 
 class GameRoomController extends Controller
 {
@@ -177,6 +178,7 @@ class GameRoomController extends Controller
 
     private function performMove($gameRoom, $square)
     {
+
         $gamerTurn = $gameRoom->gamer2Id;
         $playerSymbol = self::$PATH_X;
         if($gameRoom->gamerTurn == $gameRoom->gamer2Id)
