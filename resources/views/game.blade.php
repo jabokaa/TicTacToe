@@ -17,6 +17,15 @@
         border-bottom:solid 1px;
         border-color: rgba(0,0,0,0);
     }
+    .divLinia{
+        display: flex;
+        flex-flow: row wrap;
+    }
+    .letra{
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        font-family: "Comic Sans MS", cursive, sans-serif;
+    }
     
     .casa{
         width:200px;
@@ -25,41 +34,49 @@
         float:left;
         border-color: rgba(0,0,0,0);
     }
-</style>
-<body>
-<div>
 
-<div> <a href="{{URL::to('game')}}"><button>Nuevo Juego</button></a><br><br>
-    <button id="entrar">Entrar en Juego</button>
-        <input type="number" id="codigoDeLaSala" name="codigoDeLaSala" class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"><br>
-    </div>
-    <br>
-    <button href="{{URL::to('game')}}">Nuevo Juego</button>
-    @if($gameRoom->gameState != '')<button id="reiniciar" type="button">Reiniciar</button>@endif<br><br>
-    Es el turno del jugador : {{$gameRoom->gamerTurn}}<br>
-    Tu eres el jugador: {{ Cookie::get('idGamer') }}<br>
-    La sala es: {{ $gameRoom->id }}<br><br>
-    <button id="actualizar" type="button">Actualizar</button><br>
-</div>
-<h1>{{$gameRoom->gameState}}</h1>
-</div>
-        <div class="jogo" id='game'>
-            <div class="linha">
-                <div class="casa" id="Square1">@if($gameRoom->Square1 != '')<img src='{{asset($gameRoom->Square1)}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square2">@if($gameRoom->Square2 != '')<img src='{{asset($gameRoom->Square2)}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square3">@if($gameRoom->Square3 != '')<img src='{{asset($gameRoom->Square3)}}'style="width: 100%;">@endif</div>
+    .coluna-33 {
+        width: 33%;
+    }
+    .coluna-67 {
+        width: 66%;
+    }
+</style>
+<body style="background-image: url({{asset('fondo.png')}});">
+<div class='divLinia'>
+    <div  class="coluna-33">
+        <div> <a href="{{URL::to('game')}}"><button>Nuevo Juego</button></a><br><br>
+            <button id="entrar">Entrar en Juego</button>
+                <input type="number" id="codigoDeLaSala" name="codigoDeLaSala" class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"><br>
             </div>
-            <div class="linha">
-                <div class="casa" id="Square4">@if($gameRoom->Square4 != '')<img src='{{asset($gameRoom->Square4)}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square5">@if($gameRoom->Square5 != '')<img src='{{asset($gameRoom->Square5)}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square6">@if($gameRoom->Square6 != '')<img src='{{asset($gameRoom->Square6)}}'style="width: 100%;">@endif</div>
-            </div>
-            <div class="linha" style="border-bottom-color: #ffffff;">
-                <div class="casa" id="Square7">@if($gameRoom->Square7 != '')<img src='{{asset($gameRoom->Square7)}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square8">@if($gameRoom->Square8 != '')<img src='{{asset($gameRoom->Square8)}}'style="width: 100%;">@endif</div>
-                <div class="casa" id="Square9">@if($gameRoom->Square9 != '')<img src='{{asset($gameRoom->Square9)}}'style="width: 100%;">@endif</div>
-            </div>
+            <br>
+            @if($gameRoom->gameState != '')<button id="reiniciar" type="button">Reiniciar</button>@endif<br><br>
+            <p class='letra'>
+            Es el turno del jugador : {{$gameRoom->gamerTurn}}<br>
+            Tu eres el jugador: {{ Cookie::get('idGamer') }}<br>
+            La sala es: {{ $gameRoom->id }}<br><br></p>
+            <button id="actualizar" type="button">Actualizar</button><br>
         </div>
+        <h1>{{$gameRoom->gameState}}</h1>
+    </div>
+    <div class="jogo" id='game'  class="coluna-67">
+        <div class="linha">
+            <div class="casa" id="Square1">@if($gameRoom->Square1 != '')<img src='{{asset($gameRoom->Square1)}}'style="width: 100%;">@endif</div>
+            <div class="casa" id="Square2">@if($gameRoom->Square2 != '')<img src='{{asset($gameRoom->Square2)}}'style="width: 100%;">@endif</div>
+            <div class="casa" id="Square3">@if($gameRoom->Square3 != '')<img src='{{asset($gameRoom->Square3)}}'style="width: 100%;">@endif</div>
+        </div>
+        <div class="linha">
+            <div class="casa" id="Square4">@if($gameRoom->Square4 != '')<img src='{{asset($gameRoom->Square4)}}'style="width: 100%;">@endif</div>
+            <div class="casa" id="Square5">@if($gameRoom->Square5 != '')<img src='{{asset($gameRoom->Square5)}}'style="width: 100%;">@endif</div>
+            <div class="casa" id="Square6">@if($gameRoom->Square6 != '')<img src='{{asset($gameRoom->Square6)}}'style="width: 100%;">@endif</div>
+        </div>
+        <div class="linha">
+            <div class="casa" id="Square7">@if($gameRoom->Square7 != '')<img src='{{asset($gameRoom->Square7)}}'style="width: 100%;">@endif</div>
+            <div class="casa" id="Square8">@if($gameRoom->Square8 != '')<img src='{{asset($gameRoom->Square8)}}'style="width: 100%;">@endif</div>
+            <div class="casa" id="Square9">@if($gameRoom->Square9 != '')<img src='{{asset($gameRoom->Square9)}}'style="width: 100%;">@endif</div>
+        </div>
+    </div>
+</div>
         <div id="resultado"></div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
